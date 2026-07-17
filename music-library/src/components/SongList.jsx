@@ -1,9 +1,12 @@
 import { useState } from 'react';
+import AddSongForm from './AddSongForm';
 import { useSongsQuery } from '../hooks/useSongsQuery';
+import { useLocalSongsQuery } from '../hooks/useLocalSongsQuery';
 import { filterSongs, sortSongs, groupSongsBy } from '../utils/songUtils';
 
 function SongList() {
-  const { data: songs, isLoading, isError, error } = useSongsQuery('Coldplay');
+  const { data: itunesSongs, isLoading, isError, error } = useSongsQuery('Coldplay');
+  const { data: localSongs } = useLocalSongsQuery();
 
   const [filterField, setFilterField] = useState('artist');
   const [filterValue, setFilterValue] = useState('');
@@ -19,16 +22,20 @@ function SongList() {
     return <p>Something went wrong: {error.message}</p>;
   }
 
-  // Pipeline: filter -> sort -> (optionally) group, all plain JS on top of the fetched array
+  // Merge iTunes results with anything we've added via the mock write endpoint
+  const songs = [...(itunesSongs ?? []), ...(localSongs ?? [])];
+
   let processed = filterSongs(songs, filterField, filterValue);
   processed = sortSongs(processed, sortField, sortDirection);
 
   const grouped = groupField !== 'none' ? groupSongsBy(processed, groupField) : null;
 
+  // ...rest of the component stays exactly the same (the return JSX below)
+
   return (
     <div>
       <h2>Song Library</h2>
-      
+      <AddSongForm />
 
       <div style={{ marginBottom: '1rem', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
         {/* Filter controls */}
