@@ -5,7 +5,7 @@ import { useSongsQuery } from '../hooks/useSongsQuery';
 import { useLocalSongsQuery } from '../hooks/useLocalSongsQuery';
 import { filterSongs, sortSongs, groupSongsBy } from '../utils/songUtils';
 
-function SongList() {
+function SongList({role}) {
   const { data: itunesSongs, isLoading, isError, error } = useSongsQuery('Coldplay');
   const { data: localSongs } = useLocalSongsQuery();
 
@@ -40,7 +40,7 @@ function SongList() {
   return (
     <div>
       <h2>Song Library</h2>
-      <AddSongForm />
+      {role === 'admin' && <AddSongForm />}
 
       <div style={{ marginBottom: '1rem', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
         {/* Filter controls */}
@@ -105,11 +105,11 @@ function SongList() {
           {processed.map((song) => (
             <li key={song.id}>
   <strong>{song.title}</strong> — {song.artist} ({song.album}, {song.year})
-  {song.isLocal && (
-    <button onClick={() => deleteMutation.mutate(song.id)} style={{ marginLeft: '0.5rem' }}>
-      Delete
-    </button>
-  )}
+{role === 'admin' && song.isLocal && (
+  <button onClick={() => deleteMutation.mutate(song.id)} style={{ marginLeft: '0.5rem' }}>
+    Delete
+  </button>
+)}
 </li>
           ))}
         </ul>
