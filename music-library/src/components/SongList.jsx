@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import AddSongForm from './AddSongForm';
+import { useDeleteSongMutation } from '../hooks/useDeleteSongMutation';
 import { useSongsQuery } from '../hooks/useSongsQuery';
 import { useLocalSongsQuery } from '../hooks/useLocalSongsQuery';
 import { filterSongs, sortSongs, groupSongsBy } from '../utils/songUtils';
@@ -13,6 +14,7 @@ function SongList() {
   const [sortField, setSortField] = useState('title');
   const [sortDirection, setSortDirection] = useState('asc');
   const [groupField, setGroupField] = useState('none');
+  const deleteMutation = useDeleteSongMutation();
 
   if (isLoading) {
     return <p>Loading songs…</p>;
@@ -23,7 +25,10 @@ function SongList() {
   }
 
   // Merge iTunes results with anything we've added via the mock write endpoint
-  const songs = [...(itunesSongs ?? []), ...(localSongs ?? [])];
+  const songs = [
+  ...(itunesSongs ?? []).map((s) => ({ ...s, isLocal: false })),
+  ...(localSongs ?? []).map((s) => ({ ...s, isLocal: true })),
+];
 
   let processed = filterSongs(songs, filterField, filterValue);
   processed = sortSongs(processed, sortField, sortDirection);
@@ -99,8 +104,13 @@ function SongList() {
         <ul>
           {processed.map((song) => (
             <li key={song.id}>
-              <strong>{song.title}</strong> — {song.artist} ({song.album}, {song.year})
-            </li>
+  <strong>{song.title}</strong> — {song.artist} ({song.album}, {song.year})
+  {song.isLocal && (
+    <button onClick={() => deleteMutation.mutate(song.id)} style={{ marginLeft: '0.5rem' }}>
+      Delete
+    </button>
+  )}
+</li>
           ))}
         </ul>
       )}
