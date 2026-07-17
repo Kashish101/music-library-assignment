@@ -6,10 +6,17 @@ import App from './App.jsx'
 
 const queryClient = new QueryClient()
 
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <App />
-    </QueryClientProvider>
-  </StrictMode>,
-)
+async function enableMocking() {
+  const { worker } = await import('./mocks/browser');
+  return worker.start({ onUnhandledRequest: 'bypass' });
+}
+
+enableMocking().then(() => {
+  createRoot(document.getElementById('root')).render(
+    <StrictMode>
+      <QueryClientProvider client={queryClient}>
+        <App />
+      </QueryClientProvider>
+    </StrictMode>,
+  )
+})
