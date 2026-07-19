@@ -8,7 +8,7 @@ export default defineConfig({
     federation({
       name: 'mainApp',
       remotes: {
-        musicLibrary: 'http://localhost:5001/assets/remoteEntry.js',
+        musicLibrary: 'https://music-library-assignment.vercel.app/assets/remoteEntry.js',
       },
       shared: ['react', 'react-dom', '@tanstack/react-query'],
     }),

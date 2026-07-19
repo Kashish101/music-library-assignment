@@ -13,8 +13,8 @@ function AppContent() {
   }
 
   return (
-    <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+    <div className="app-shell">
+      <div className="top-bar" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <p>Logged in as: <strong>{role}</strong></p>
         <button onClick={logout}>Log out</button>
       </div>
