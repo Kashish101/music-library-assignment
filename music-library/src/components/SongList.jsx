@@ -42,7 +42,7 @@ function SongList({role}) {
       <h2>Song Library</h2>
       {role === 'admin' && <AddSongForm />}
 
-      <div style={{ marginBottom: '1rem', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+      <div className="controls-bar" style={{ marginBottom: '1rem', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
         {/* Filter controls */}
         <label>
           Filter by:{' '}
@@ -94,7 +94,7 @@ function SongList({role}) {
             <ul>
               {groupSongs.map((song) => (
                 <li key={song.id}>
-                  <strong>{song.title}</strong> — {song.artist} ({song.album}, {song.year})
+                  <strong>{song.title}</strong> - {song.artist} ({song.album}, {song.year})
                 </li>
               ))}
             </ul>
@@ -104,7 +104,7 @@ function SongList({role}) {
         <ul>
           {processed.map((song) => (
             <li key={song.id}>
-  <strong>{song.title}</strong> — {song.artist} ({song.album}, {song.year})
+  <strong>{song.title}</strong> - {song.artist} ({song.album}, {song.year})
 {role === 'admin' && song.isLocal && (
   <button onClick={() => deleteMutation.mutate(song.id)} style={{ marginLeft: '0.5rem' }}>
     Delete
